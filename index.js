@@ -1,7 +1,10 @@
 const path = require('path')
-
 const express = require('express')
+const bodyParser = require('body-parser');
 const webpush = require('web-push')
+
+const app = express()
+app.use(bodyParser.json())
 
 const { PushApp } = require('./PushApp')
 
@@ -28,9 +31,7 @@ app.post('/subscribe', (req, res) => {
 // unsubscribe
 
 // get public key
-app.get('/public_key', (req, res) => {
-    res.status(200).send(VAPID_PUBLIC)
-})
+app.get('/public_key', PushServer.sendPublicKey)
 
 // send push notification
 app.post('/notify', (req, res) => {

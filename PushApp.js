@@ -1,5 +1,3 @@
-const express = require('express')
-const bodyParser = require('body-parser');
 const webpush = require('web-push')
 
 
@@ -16,7 +14,14 @@ class PushApp {
         this.vapidPrivateKey = vapidKeys.privateKey
 
         this.port = process.env.SERVER_PORT || 3000
-}
+        this.subscriptions = new Map()
+
+        }
+
+        sendPublicKey(req,res){
+            return res.status(200).send(this.vapidPublicKey)
+        }
+
 }
 
 /**
