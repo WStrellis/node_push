@@ -1,0 +1,24 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true,
+        "node": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "rules": {
+    "no-var": 2,
+    "no-console": 0,
+    "comma-dangle": 0,
+    "require-jsdoc": 0,
+    "no-useless-escape": 0,
+    "indent": 0,
+    "prefer-const": 0,
+    "semi":0,
+    "eol-last": 1,
+    "no-unused-vars": 1
+    }
+}
