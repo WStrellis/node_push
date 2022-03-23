@@ -1,14 +1,4 @@
-const { PushApp, getVapidKeys } = require('../PushApp')
-
-describe('tests for PushApp', () => {
-    test('should have expected properties', () => {
-        const PushServer = new PushApp()
-
-        expect(PushServer.vapidPrivateKey.length).toBeGreaterThan(0)
-        expect(PushServer.vapidPublicKey.length).toBeGreaterThan(0)
-        expect(PushServer.port).toBe(3000)
-    })
-})
+const { getVapidKeys } = require('../src/tools')
 
 describe('tests for getVapidKeys', () => {
     test('should return private and public keys which are not empty strings', () => {
