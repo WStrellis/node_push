@@ -16,3 +16,4 @@ dist
 npm-debug.log
 **/*.env
 **/.parcel-cache
+coverage

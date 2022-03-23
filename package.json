@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A server that can send push notifications",
   "scripts": {
-    "format": "npx prettier --write client/*.js index.js",
+    "format": "npx prettier --write **/*.js ",
     "start": "node index.js",
     "test": "jest"
   },

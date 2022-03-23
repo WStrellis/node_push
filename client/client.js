@@ -1,4 +1,3 @@
-
 function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
     const base64 = (base64String + padding)
@@ -16,19 +15,22 @@ function urlBase64ToUint8Array(base64String) {
 
 // check if the service worker can work in the current browser
 if ('serviceWorker' in navigator) {
-    send().catch((err) => console.error(err))
 }
 
-// register the service worker, register our push api, send the notification
-async function send() {
-    // register service worker
+// register service worker
+async function registerServiceWorker() {
     const register = await navigator.serviceWorker.register(
         new URL('./worker.js', import.meta.url),
         {
             scope: '/',
         }
     )
+}
 
+// register push api
+
+// send notification
+async function sendNotification() {
     // register push
     const subscription = await register.pushManager.subscribe({
         userVisibleOnly: true,
@@ -46,5 +48,3 @@ async function send() {
         },
     })
 }
-
-send()

@@ -6,7 +6,7 @@ Browser
 - [ ] subscribe user
 
 Server
-- [ ] generate vapid keys if not found
+- [x] generate vapid keys if not found
 - [ ] endpoint to subscribe
 - [ ] endpoint to unsubscribe
 - [ ] endpoint to get public vapid key
@@ -16,5 +16,5 @@ Server
 Worker
 - [ ] function to handle push event
 - [ ] function to handle clicking on notification
-    -  [ ] close notification
+    - [ ] close notification
     - [ ] open window to app
