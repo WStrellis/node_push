@@ -10,7 +10,7 @@ const endpoints = require("./src/endpoints")
 const app = express()
 app.use(bodyParser.json())
 
-const subscriptions = new Map()
+const subscriptions = []
 
  const vapidKeys = getVapidKeys()
 
@@ -22,15 +22,7 @@ webpush.setVapidDetails(
 )
 
 // subscribe route
-app.post('/subscribe', (req, res) => {
-    // get push subscription object from the request
-    // const subscription = req.body
-
-    // save subscription data
-
-    // send status 201 for the request
-    // res.status(201).json({})
-})
+app.post('/subscribe', (req, res) => endpoints.subscribe(req,res,subscriptions))
 
 // unsubscribe
 

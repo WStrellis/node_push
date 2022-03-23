@@ -20,3 +20,29 @@ describe('tests for sendPublicKey', () => {
         expect(actual.body.publicKey).toBe(pub)
     })
 })
+
+describe('tests for subscribe', () => {
+    test('should save subscription', () => {
+        const subscriptions = []
+        const req = {
+            body: {
+                endpoint: 'http://foo.bar',
+                keys: {
+                    auth: 'foo',
+                },
+            },
+        }
+        const res = {
+            status: function status(code) {
+                this.status_code = code
+                return this
+            },
+            send: function send(res_body) {
+                this.body = res_body
+                return this
+            },
+        }
+        const actual = endpoints.subscribe(req, res, subscriptions)
+        expect(subscriptions.length).toBe(1)
+    })
+})
