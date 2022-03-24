@@ -13,7 +13,10 @@ function urlBase64ToUint8Array(base64String) {
     return outputArray
 }
 
-// register service worker
+/**
+ * Register a service worker 
+ * @returns {ServiceWorkerRegistration}
+ */
 async function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
         try {
@@ -41,6 +44,7 @@ async function registerServiceWorker() {
 
 /**
  * Get existing subscription if exists and unsubscribe
+ * returns null if not subscription is found
  * @returns {PushSubscription}
  */
 async function getSubscription(registration) {
@@ -49,10 +53,9 @@ async function getSubscription(registration) {
     if (subscription) {
         console.log('found subscription', subscription)
         subscription.unsubscribe()
-        return subscription
     }
     console.log('No subscription found')
-    return null
+    return subscription
 }
 
 /**
