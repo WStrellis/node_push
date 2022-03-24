@@ -2,6 +2,7 @@ const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser');
 const webpush = require('web-push')
+const process = require("process")
 require('dotenv').config()
 
 const {getVapidKeys} = require("./src/tools")
@@ -13,6 +14,7 @@ app.use(bodyParser.json())
 const subscriptions = []
 
  const vapidKeys = getVapidKeys()
+ if (!vapidKeys) process.exit(1) 
 
 // setting vapid keys details
 webpush.setVapidDetails(
@@ -31,6 +33,7 @@ app.get('/public_key', (req,res) => endpoints.sendPublicKey(req,res, vapidKeys.p
 
 // send push notification
 // app.post('/notify', (req, res) => {
+    // loop over subscriptions and send notification to each one
 //     webpush
 //         .sendNotification(subscription, {
 //             title: req?.body?.title,

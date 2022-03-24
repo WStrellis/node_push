@@ -13,7 +13,10 @@ function urlBase64ToUint8Array(base64String) {
     return outputArray
 }
 
-// register service worker
+/**
+ * Register a service worker 
+ * @returns {ServiceWorkerRegistration}
+ */
 async function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
         try {
@@ -41,6 +44,7 @@ async function registerServiceWorker() {
 
 /**
  * Get existing subscription if exists and unsubscribe
+ * returns null if not subscription is found
  * @returns {PushSubscription}
  */
 async function getSubscription(registration) {
@@ -48,19 +52,19 @@ async function getSubscription(registration) {
     // If a subscription was found, return it.
     if (subscription) {
         console.log('found subscription', subscription)
-        // subscription.unsubscribe()
-        return subscription
+        subscription.unsubscribe()
     }
     console.log('No subscription found')
-    return null
+    return subscription
 }
 
 /**
  * Create subscription to push service
+ * @param {} register
  * @param {String} publicVapidKey
  * @returns  {PushSubscription}
  */
-async function createSubscription(publicVapidKey) {
+async function createSubscription(register, publicVapidKey) {
     const subscription = await register.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
@@ -110,8 +114,8 @@ async function configurePushWorker() {
     let subscription = await getSubscription(reg)
 
     if (!subscription) {
-        // fetch public key
         try {
+            // fetch public key
             const key = await getPublicKey()
             if (!key) {
                 console.error(
@@ -120,11 +124,15 @@ async function configurePushWorker() {
                 return
             }
             console.log(key)
+
+            // create new subscription
+            subscription = await createSubscription(reg, key)
+
+            //subscribe
+            await subscribe(subscription)
         } catch (error) {
             console.error(error)
         }
-        // create new subscription
-        //subscribe
     }
 }
 

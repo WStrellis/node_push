@@ -11,15 +11,19 @@ function getVapidKeys() {
         privateKey: process.env.VAPID_PRIVATE_KEY || '',
     }
 
-    if (!keys.publicKey) {
-        console.log('Public VAPID key not found. Using generated key.')
-        keys.publicKey = generatedKeys.publicKey
+    if (!keys.publicKey || !keys.privateKey) {
+        console.log('Public VAPID key:', keys.publicKey)
+        console.log(
+            'Private VAPID key (masked):',
+            'X'.repeat(keys.privateKey.length)
+        )
+        console.log(
+            'Public VAPID key or Private VAPID key not found. You can use these:',
+            generatedKeys
+        )
+        return null
     }
 
-    if (!keys.privateKey) {
-        console.log('Private VAPID key not found. Using generated key.')
-        keys.privateKey = generatedKeys.privateKey
-    }
     return keys
 }
 
