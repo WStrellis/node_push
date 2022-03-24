@@ -47,7 +47,7 @@ async function getSubscription(registration) {
     const subscription = await registration.pushManager.getSubscription()
     // If a subscription was found, return it.
     if (subscription) {
-        console.log("found subscription",subscription)
+        console.log('found subscription', subscription)
         // subscription.unsubscribe()
         return subscription
     }
@@ -65,14 +65,32 @@ async function createSubscription(publicVapidKey) {
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
     })
-    console.log("created subscription",subscription)
+    console.log('created subscription', subscription)
     return subscription
 }
 
 // get public key
+async function getPublicKey() {
+    const res = await fetch('/public_key', {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json',
+        },
+    })
 
-// send notification
-async function sendNotification() {
+    if (res.ok) {
+        const { publicKey } = await res.json()
+        return publicKey
+    }
+    console.log(res)
+    return null
+}
+
+/**
+ * Register subscription with push manager on server
+ * @param {PushSubscription} subscription
+ */
+async function subscribe(subscription) {
     await fetch('/subscribe', {
         method: 'POST',
         body: JSON.stringify(subscription),
@@ -91,9 +109,23 @@ async function configurePushWorker() {
     // check for existing subscription
     let subscription = await getSubscription(reg)
 
-    // fetch public key
-    // create new subscription
-    //subscribe
+    if (!subscription) {
+        // fetch public key
+        try {
+            const key = await getPublicKey()
+            if (!key) {
+                console.error(
+                    'Could not get public vapid key to create subscription.'
+                )
+                return
+            }
+            console.log(key)
+        } catch (error) {
+            console.error(error)
+        }
+        // create new subscription
+        //subscribe
+    }
 }
 
 // check if the service worker can work in the current browser
