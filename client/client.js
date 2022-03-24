@@ -13,33 +13,66 @@ function urlBase64ToUint8Array(base64String) {
     return outputArray
 }
 
-// check if the service worker can work in the current browser
-if ('serviceWorker' in navigator) {
-}
-
 // register service worker
 async function registerServiceWorker() {
-    const register = await navigator.serviceWorker.register(
-        new URL('./worker.js', import.meta.url),
-        {
-            scope: '/',
+    if ('serviceWorker' in navigator) {
+        try {
+            const registration = await navigator.serviceWorker.register(
+                './worker.js',
+                {
+                    scope: '/',
+                }
+            )
+            if (registration.installing) {
+                console.log('Service worker installing')
+            } else if (registration.waiting) {
+                console.log('Service worker installed')
+            } else if (registration.active) {
+                console.log('Service worker active')
+            }
+            return registration
+        } catch (error) {
+            console.error(`Registration failed with ${error}`)
         }
-    )
-}
+    }
+} // end registerServiceWorker
 
 // register push api
 
-// send notification
-async function sendNotification() {
-    // register push
+/**
+ * Get existing subscription if exists and unsubscribe
+ * @returns {PushSubscription}
+ */
+async function getSubscription(registration) {
+    const subscription = await registration.pushManager.getSubscription()
+    // If a subscription was found, return it.
+    if (subscription) {
+        console.log("found subscription",subscription)
+        // subscription.unsubscribe()
+        return subscription
+    }
+    console.log('No subscription found')
+    return null
+}
+
+/**
+ * Create subscription to push service
+ * @param {String} publicVapidKey
+ * @returns  {PushSubscription}
+ */
+async function createSubscription(publicVapidKey) {
     const subscription = await register.pushManager.subscribe({
         userVisibleOnly: true,
-
-        // public vapid key
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
     })
+    console.log("created subscription",subscription)
+    return subscription
+}
 
-    // Send push notification
+// get public key
+
+// send notification
+async function sendNotification() {
     await fetch('/subscribe', {
         method: 'POST',
         body: JSON.stringify(subscription),
@@ -47,4 +80,25 @@ async function sendNotification() {
             'content-type': 'application/json',
         },
     })
+}
+
+async function configurePushWorker() {
+    const reg = await registerServiceWorker()
+
+    // wait for service worker to be ready
+    await navigator.serviceWorker.ready
+
+    // check for existing subscription
+    let subscription = await getSubscription(reg)
+
+    // fetch public key
+    // create new subscription
+    //subscribe
+}
+
+// check if the service worker can work in the current browser
+if ('serviceWorker' in navigator && 'PushManager' in window) {
+    console.log('Service Worker and Push is supported')
+
+    configurePushWorker()
 }
