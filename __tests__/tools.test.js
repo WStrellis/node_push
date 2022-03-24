@@ -1,10 +1,9 @@
 const { getVapidKeys } = require('../src/tools')
 
 describe('tests for getVapidKeys', () => {
-    test('should return private and public keys which are not empty strings', () => {
+    test('should return null if environment variables are not set', () => {
         const keys = getVapidKeys()
-        expect(keys.privateKey.length).toBeGreaterThan(0)
-        expect(keys.publicKey.length).toBeGreaterThan(0)
+        expect(keys).toBeNull()
     })
 
     test('should return keys found in environment variables', () => {

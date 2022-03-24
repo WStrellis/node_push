@@ -48,7 +48,7 @@ async function getSubscription(registration) {
     // If a subscription was found, return it.
     if (subscription) {
         console.log('found subscription', subscription)
-        // subscription.unsubscribe()
+        subscription.unsubscribe()
         return subscription
     }
     console.log('No subscription found')
@@ -57,10 +57,11 @@ async function getSubscription(registration) {
 
 /**
  * Create subscription to push service
+ * @param {} register
  * @param {String} publicVapidKey
  * @returns  {PushSubscription}
  */
-async function createSubscription(publicVapidKey) {
+async function createSubscription(register, publicVapidKey) {
     const subscription = await register.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
@@ -110,8 +111,8 @@ async function configurePushWorker() {
     let subscription = await getSubscription(reg)
 
     if (!subscription) {
-        // fetch public key
         try {
+            // fetch public key
             const key = await getPublicKey()
             if (!key) {
                 console.error(
@@ -120,11 +121,15 @@ async function configurePushWorker() {
                 return
             }
             console.log(key)
+
+            // create new subscription
+            subscription = await createSubscription(reg, key)
+
+            //subscribe
+            await subscribe(subscription)
         } catch (error) {
             console.error(error)
         }
-        // create new subscription
-        //subscribe
     }
 }
 
