@@ -19,7 +19,7 @@ function sendPublicKey(req, res, key) {
 function subscribe(req, res, subscriptions) {
     subscriptions.push(req.body)
     console.log(subscriptions)
-    return res.status(201).send({msg:"ok"})
+    return res.status(201).send({ msg: 'ok' })
 }
 
 module.exports = {
