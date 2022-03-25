@@ -4,12 +4,13 @@
   "description": "A server that can send push notifications",
   "scripts": {
     "format": "npx prettier --write **/*.js ",
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "test": "jest"
   },
   "devDependencies": {
     "dotenv": "^16.0.0",
     "jest": "^27.5.1",
+    "nodemon": "^2.0.15",
     "prettier": "2.5.1"
   },
   "dependencies": {

@@ -22,7 +22,27 @@ function subscribe(req, res, subscriptions) {
     return res.status(201).send({ msg: 'ok' })
 }
 
+// loop over subscriptions and send notification to each one
+async function sendNotification(req, res, webpush, subscriptions) {
+    await Promise.all(
+        subscriptions.map((s) =>
+            webpush
+                .sendNotification(
+                    s,
+                    JSON.stringify({
+                        title: req.body?.title,
+                        body: req.body?.data,
+                    })
+                )
+                .catch((err) =>
+                    console.error('Error sending notification:', err)
+                )
+        )
+    )
+    return res.status(200).send({ msg: 'ok' })
+}
 module.exports = {
     sendPublicKey,
     subscribe,
+    sendNotification,
 }
