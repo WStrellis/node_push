@@ -32,15 +32,7 @@ app.post('/subscribe', (req, res) => endpoints.subscribe(req,res,subscriptions))
 app.get('/public_key', (req,res) => endpoints.sendPublicKey(req,res, vapidKeys.publicKey) )
 
 // send push notification
-// app.post('/notify', (req, res) => {
-    // loop over subscriptions and send notification to each one
-//     webpush
-//         .sendNotification(subscription, {
-//             title: req?.body?.title,
-//             body: req?.body?.data,
-//         })
-//         .catch((err) => console.error(err))
-// })
+app.post('/notify',(req,res) => endpoints.sendNotification(req,res, webpush,subscriptions))
 
 // serve web page
 app.use(express.static(path.join(__dirname, 'client')))

@@ -14,7 +14,7 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 /**
- * Register a service worker 
+ * Register a service worker
  * @returns {ServiceWorkerRegistration}
  */
 async function registerServiceWorker() {
@@ -40,8 +40,6 @@ async function registerServiceWorker() {
     }
 } // end registerServiceWorker
 
-// register push api
-
 /**
  * Get existing subscription if exists and unsubscribe
  * returns null if not subscription is found
@@ -53,8 +51,9 @@ async function getSubscription(registration) {
     if (subscription) {
         console.log('found subscription', subscription)
         subscription.unsubscribe()
+    } else {
+        console.log('No subscription found')
     }
-    console.log('No subscription found')
     return subscription
 }
 
@@ -111,8 +110,8 @@ async function configurePushWorker() {
     await navigator.serviceWorker.ready
 
     // check for existing subscription
-    let subscription = await getSubscription(reg)
-
+    // let subscription = await getSubscription(reg)
+    let subscription = null
     if (!subscription) {
         try {
             // fetch public key
