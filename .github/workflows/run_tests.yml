@@ -22,11 +22,7 @@ jobs:
         node-version: '14.x'
         cache: 'npm'
     - run: npm ci
-    # - run: npm test
-#    https://github.com/marketplace/actions/jest-coverage-report
-    - uses: ArtiomTr/jest-coverage-report-action@v2
-      # with:
-        # test-script: npm test
+    - run: npm test
     # - name: Archive code coverage results
     #   uses: actions/upload-artifact@v3
     #   with:
