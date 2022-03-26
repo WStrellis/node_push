@@ -10,7 +10,8 @@ describe('tests for getVapidKeys', () => {
         const priv = 'abc'
         const pub = 'hgl'
 
-        process.env.VAPID_PRIVATE_KEY = priv
+        process.env.VAPID_PRIVATE_KEY = "x"
+        // process.env.VAPID_PRIVATE_KEY = priv
         process.env.VAPID_PUBLIC_KEY = pub
 
         const keys = getVapidKeys()
