@@ -135,9 +135,10 @@ async function configurePushWorker() {
     }
 }
 
+const subscriptionDiv = document.querySelector("#subscription-status-div")
 // check if the service worker can work in the current browser
 if ('serviceWorker' in navigator && 'PushManager' in window) {
     console.log('Service Worker and Push is supported')
-
+    subscriptionDiv.classList.remove("d-none")
     configurePushWorker()
 }
