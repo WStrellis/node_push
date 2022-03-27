@@ -1,3 +1,11 @@
 .d-none{
     display: none;
 }
+
+.bg-lightgreen{
+    background-color: lightgreen;
+}
+
+.bg-silver{
+    background-color: silver;
+}
