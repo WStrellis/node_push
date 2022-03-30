@@ -23,7 +23,7 @@ describe('tests for sendPublicKey', () => {
 
 describe('tests for subscribe', () => {
     test('should save subscription', () => {
-        const subscriptions = []
+        const subscriptions = new Map()
         const req = {
             body: {
                 endpoint: 'http://foo.bar',
@@ -43,18 +43,21 @@ describe('tests for subscribe', () => {
             },
         }
         const actual = endpoints.subscribe(req, res, subscriptions)
-        expect(subscriptions.length).toBe(1)
+        expect(subscriptions.size).toBe(1)
     })
 })
 
-
 describe('tests for unsubscribe', () => {
-    test('should delete subscription', () => {
-        const subscriptions = [{endpoint:"https://foo"},{endpoint:"https://bar"}]
+    test('should delete subscription', async () => {
+        const subscriptions = new Map()
+        subscriptions.set('https://foo', { endpoint: 'https://foo' })
+        subscriptions.set('https://bar', { endpoint: 'https://bar' })
+
+        expect(subscriptions.size).toBe(2)
         const req = {
-           query: {
-               subscription: 'http://foo'
-           }
+            query: {
+                subscription: 'https://foo',
+            },
         }
         const res = {
             status: function status(code) {
@@ -66,9 +69,7 @@ describe('tests for unsubscribe', () => {
                 return this
             },
         }
-        endpoints.unsubscribe(req, res, subscriptions)
-        expect(subscriptions.length).toBe(1)
+        await endpoints.unsubscribe(req, res, subscriptions)
+        expect(subscriptions.size).toBe(1)
     })
 })
-
-

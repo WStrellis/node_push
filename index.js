@@ -11,7 +11,7 @@ const endpoints = require("./src/endpoints")
 const app = express()
 app.use(bodyParser.json())
 
-const subscriptions = []
+const subscriptions = new Map() 
 
  const vapidKeys = getVapidKeys()
  if (!vapidKeys) process.exit(1) 
@@ -27,12 +27,15 @@ webpush.setVapidDetails(
 app.post('/subscribe', (req, res) => endpoints.subscribe(req,res,subscriptions))
 
 // unsubscribe
+app.delete('/unsubscribe', (req, res) => endpoints.unsubscribe(req,res,subscriptions))
 
 // get public key
 app.get('/public_key', (req,res) => endpoints.sendPublicKey(req,res, vapidKeys.publicKey) )
 
 // send push notification
 app.post('/notify',(req,res) => endpoints.sendNotification(req,res, webpush,subscriptions))
+
+app.get('/subscriptions',(req,res) => res.status(200).send({data: [...subscriptions.entries()]}))
 
 // serve web page
 app.use(express.static(path.join(__dirname, 'client')))
