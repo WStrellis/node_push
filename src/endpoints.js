@@ -24,8 +24,9 @@ function subscribe(req, res, subscriptions) {
 
 // loop over subscriptions and send notification to each one
 async function sendNotification(req, res, webpush, subscriptions) {
-    await Promise.all(
-        subscriptions.map((s) =>
+    const reqs = []
+    subscriptions.forEach((s) =>
+        reqs.push(
             webpush
                 .sendNotification(
                     s,
@@ -39,6 +40,9 @@ async function sendNotification(req, res, webpush, subscriptions) {
                 )
         )
     )
+
+    await Promise.all(reqs)
+
     return res.status(200).send({ msg: 'ok' })
 }
 
