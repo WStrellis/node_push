@@ -57,7 +57,6 @@ async function getSubscription() {
     // If a subscription was found, return it.
     if (subscription) {
         console.log('found subscription', subscription)
-        // subscription.unsubscribe()
     } else {
         console.log('No subscription found')
     }
