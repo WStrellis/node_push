@@ -10,3 +10,9 @@ Variables can be written to `<project_root>/.env`
 | VAPID_PRIVATE_KEY  | No  | Private key for push notifications  |
 | VAPID_PUBLIC_KEY  | No  |  Public key for push notifications |
 | MAIL_TO  | No  | email address for push notification configuration  |
+
+
+_Running Docker Image_  
+```
+dk run -p 3000:3000 --name <CONTAINER NAME> -e VAPID_PUBLIC_KEY=<PUBLIC KEY> -e VAPID_PRIVATE_KEY=<PRIVATE KEY> push_app
+```
