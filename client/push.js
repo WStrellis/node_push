@@ -48,9 +48,7 @@ async function registerServiceWorker() {
  * @param {ServiceWorkerRegistration} swReg
  * @returns {PushSubscription}
  */
-async function getSubscription() {
-    const swReg = await registerServiceWorker()
-
+async function getSubscription(swReg) {
     await navigator.serviceWorker.ready
     // PushSubscription.subscriptionId is not available in Chrome https://chromestatus.com/feature/5283829761703936
     const subscription = await swReg.pushManager.getSubscription()
@@ -70,7 +68,7 @@ async function getSubscription() {
  * @param {String} publicVapidKey
  * @returns  {PushSubscription}
  */
-async function createSubscription(swReg, publicVapidKey) {
+export async function createSubscription(swReg, publicVapidKey) {
     const subscription = await swReg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
@@ -80,7 +78,7 @@ async function createSubscription(swReg, publicVapidKey) {
 }
 
 // get public key
-async function getPublicKey() {
+export async function getPublicKey() {
     const res = await fetch('/public_key', {
         method: 'GET',
         headers: {
@@ -100,7 +98,7 @@ async function getPublicKey() {
  * Register subscription with push manager on server
  * @param {PushSubscription} subscription
  */
-function subscribe(subscription) {
+export function subscribe(subscription) {
     return fetch('/subscribe', {
         method: 'POST',
         body: JSON.stringify(subscription),
@@ -110,76 +108,39 @@ function subscribe(subscription) {
     })
 }
 
-async function main() {
-    // create class which stores SW subscription and has methods to update the
-    // stored subscription. Those method can also update the dom.
-
-    // wait for service worker to be ready
-    // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/ready
-
-    // add event listener for subscribe btn
-    const subscribeBtn = document.querySelector('#subscribe-btn')
-    subscribeBtn.addEventListener('click', async function (e) {
-        const btn = e.target
-        // disable button while processing
-        const subscribed = await clickSubscribeBtn()
-        // enable button if failed
-        if (subscribed.ok) {
-            const statusP = document.querySelector('#subscription-status')
-            statusP.textContent = 'SUBSCRIBED'
-            statusP.classList.add('bg-lightgreen')
-            // keep button disable if subscribed
-            btn.disabled = true
+export class SubscriptionManager {
+    constructor() {
+        const sm = this
+        try {
+            registerServiceWorker().then((reg) => (sm.sw = reg))
+            getPublicKey().then((key) => (sm.key = key))
+            getSubscription(sm.sw).then((sub) => (sm.subscription = sub))
+            subscribe(sm.subscription).then((res) => {
+                if (res.ok) {
+                    sm.subscribed = true
+                } else {
+                    sm.subscribed = false
+                }
+            })
+        } catch (err) {
+            console.log('error creating SubscriptionManager:', err)
         }
-    })
-
-    // add event listener for unsubscribe btn
-
-    // check for existing subscription
-    // let subscription = await getSubscription()
-    // disable subscribe button if subscription exists
-    // update dom based on whether or not subscription is present
-}
-
-/**
- * Register service worker, get api key from server, create subscription,
- * send subscription to server
- * @param {Event} event
- * @returns
- */
-async function clickSubscribeBtn(event) {
-    try {
-        const swReg = await registerServiceWorker()
-
-        // wait for service worker to be ready
-        // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/ready
-        await navigator.serviceWorker.ready
-        // fetch public key
-        const key = await getPublicKey()
-        if (!key) {
-            console.error(
-                'Could not get public vapid key to create subscription.'
-            )
-            return
-        }
-        // console.log(key)
-
-        // create new subscription
-        const subscription = await createSubscription(swReg, key)
-        // send subscription to server
-        return subscribe(subscription)
-    } catch (error) {
-        console.error(error)
     }
-}
 
-const subscriptionDiv = document.querySelector('#subscription-status-div')
-// check if the service worker can work in the current browser
-if ('serviceWorker' in navigator && 'PushManager' in window) {
-    subscriptionDiv.classList.remove('d-none')
-    const subscriptionStatus = document.querySelector('#subscription-status')
-    const subscribeBtn = document.querySelector('#subscribe-btn')
-    const unsubscribeBtn = document.querySelector('#unsubscribe-btn')
+    debug() {
+        console.log('ServiceWorkerRegistration:', this.sw)
+        console.log('public key:', this.key)
+        console.log('subscription:', this.subscription)
+    }
 
-    main()
+    async subscribeToNotifications() {
+        this.subscription = await createSubscription(this.subscription)
+        const res = await subscribe(this.sw, this.key)
+        if (res.ok) {
+            this.subscribed = true
+        } else {
+            console.log(res)
+            this.subscribed = false
+        }
+    }
 }
