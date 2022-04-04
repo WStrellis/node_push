@@ -10,6 +10,9 @@ function setStatus(subscribed) {
         ? 'SUBSCRIBED'
         : 'NOT SUBSCRIBED'
     subscriptionStatus.classList.add(subscribed ? 'bg-lightgreen' : 'bg-silver')
+    subscriptionStatus.classList.remove(
+        subscribed ? 'bg-silver' : 'bg-lightgreen'
+    )
 
     document.querySelector('#subscribe-btn').disabled = subscribed
     document.querySelector('#unsubscribe-btn').disabled = !subscribed
@@ -48,11 +51,6 @@ export default async function main() {
         // disable button while processing
         await subManager.unsubscribe()
         setStatus(subManager.subscribed)
+        subManager.debug()
     })
-
-
-    // check for existing subscription
-    // let subscription = await getSubscription()
-    // disable subscribe button if subscription exists
-    // update dom based on whether or not subscription is present
 }

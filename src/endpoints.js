@@ -56,6 +56,7 @@ async function sendNotification(req, res, webpush, subscriptions) {
 async function unsubscribe(req, res, subscriptions) {
     if (subscriptions.has(req?.query?.subscription)) {
         subscriptions.delete(req.query.subscription)
+        console.log('subscriptions', subscriptions)
         return res.status(200).send({ msg: 'ok' })
     }
 

@@ -38,6 +38,7 @@ export class SubscriptionManager {
         } catch (err) {
             console.log('error creating SubscriptionManager:', err)
         }
+        return
     } // end init
 
     /**
@@ -45,27 +46,18 @@ export class SubscriptionManager {
      * @returns {ServiceWorkerRegistration}
      */
     async registerServiceWorker() {
-        if ('serviceWorker' in navigator) {
-            try {
-                const swReg = await navigator.serviceWorker.register(
-                    './worker.js',
-                    {
-                        scope: '/',
-                    }
-                )
-                if (swReg.installing) {
-                    console.log('Service worker installing')
-                } else if (swReg.waiting) {
-                    console.log('Service worker installed')
-                } else if (swReg.active) {
-                    console.log('Service worker active')
+        try {
+            const swReg = await navigator.serviceWorker.register(
+                './worker.js',
+                {
+                    scope: '/',
                 }
-                this.sw = swReg
-            } catch (error) {
-                console.error(`Registration failed with ${error}`)
-            }
-            return
+            )
+            this.sw = swReg
+        } catch (error) {
+            console.error(`Registration failed with ${error}`)
         }
+        return
     } // end registerServiceWorker
 
     async getPublicKey() {
@@ -81,7 +73,7 @@ export class SubscriptionManager {
         } else {
             this.key = null
         }
-        return null
+        return
     } // end getPublicKey
 
     async getSubscription() {
@@ -92,21 +84,17 @@ export class SubscriptionManager {
         await navigator.serviceWorker.ready
         // PushSubscription.subscriptionId is not available in Chrome https://chromestatus.com/feature/5283829761703936
         const subscription = await this.sw.pushManager.getSubscription()
-        // If a subscription was found, return it.
-        if (subscription) {
-            console.log('found subscription', subscription)
-        } else {
-            console.log('No subscription found')
-        }
+
         this.subscription = subscription
         return
     } // end getSubscription
 
     async subscribe() {
         if (!this.subscription) {
-            console.log('No subscription')
+            console.log('No subscription to subscribe to')
             return
         }
+
         const res = await fetch('/subscribe', {
             method: 'POST',
             body: JSON.stringify(this.subscription),
@@ -114,13 +102,34 @@ export class SubscriptionManager {
                 'content-type': 'application/json',
             },
         })
-        if (res.ok) {
-            this.subscribed = true
-        } else {
-            this.subscribed = false
-        }
+
+        this.subscribed = Boolean(res?.ok)
         return
     } // end subscribe
+
+    async unsubscribe() {
+        if (!this.subscription) {
+            console.log('No subscription to unsubscribe to')
+            return
+        }
+        // remove subscription from browser. Returns bool
+        const isUnsubscribed = await this.subscription.unsubscribe()
+
+        // remove subscription from server
+        const endpoint = `/unsubscribe?subscription=${this.subscription.endpoint}`
+        const res = await fetch(endpoint, {
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json',
+            },
+        })
+
+        if (res.ok && isUnsubscribed) {
+            this.subscribed = false
+            this.subscription = null
+        }
+        return
+    } // end unsubscribe
 
     async createSubscription() {
         if (!this.sw || !this.key) {
@@ -131,8 +140,7 @@ export class SubscriptionManager {
             userVisibleOnly: true,
             applicationServerKey: urlBase64ToUint8Array(this.key),
         })
-        console.log('created subscription', subscription)
-        this.subscription
+        this.subscription = subscription
         return
     } // end createSubscription
 }

@@ -2,6 +2,18 @@
     display: none;
 }
 
+.text-center{
+    text-align: center;
+}
+
+.mx-auto{
+    margin: 0 auto;
+}
+
+.w-75{
+    width: 75%;
+}
+
 .bg-lightgreen{
     background-color: lightgreen;
 }
