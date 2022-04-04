@@ -8,13 +8,18 @@
     <title>Push Notifications using Node</title>
 </head>
 <body>
-    <h1>Push Notifications</h1>
-    <div id="subscription-status-div" class="d-none">
-        <p id="subscription-status"></p>
-    <button id="subscribe-btn">Subscribe</button>
-    <button id="unsubscribe-btn">Unsubscribe</button>
-</div>
+    <h1 class="text-center">Push Notifications</h1>
 
-    <script type="module" src="client.js"></script>
+    <p id="push-not-supported" class="d-none text-center">Sorry, this browser does not support push notifications.</p>
+
+    <div id="subscription-status-div" class="d-none mx-auto w-75">
+        <p id="subscription-status" class="text-center"></p>
+        <div class="text-center">
+            <button id="subscribe-btn">Subscribe</button>
+            <button id="unsubscribe-btn">Unsubscribe</button>
+        </div>
+    </div>
+
+    <script type="module" src="./index.js"></script>
 </body>
 </html>
