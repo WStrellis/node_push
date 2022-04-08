@@ -6,6 +6,11 @@
     text-align: center;
 }
 
+.my-3 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
 .mx-auto{
     margin: 0 auto;
 }
@@ -14,10 +19,19 @@
     width: 75%;
 }
 
+.w-100{
+
+    width: 100%;
+}
+
 .bg-lightgreen{
     background-color: lightgreen;
 }
 
 .bg-silver{
     background-color: silver;
+}
+
+.d-block{
+    display: block;
 }
