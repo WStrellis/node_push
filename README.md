@@ -16,3 +16,7 @@ _Running Docker Image_
 ```
 dk run -p 3000:3000 --name <CONTAINER NAME> -e VAPID_PUBLIC_KEY=<PUBLIC KEY> -e VAPID_PRIVATE_KEY=<PRIVATE KEY> push_app
 ```
+
+_Notes About Push Notifications_
+- If a user has an active Push subscription and the browser is open but the application is not in any current tabs the user will receive the notification pop-up when a Push event occurs
+- If a user has an active Push subscription and the browser is closed the user will *NOT* receive a notification pop-up on their device until they open the browser they subscribed with.
