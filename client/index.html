@@ -14,10 +14,24 @@
 
     <div id="subscription-status-div" class="d-none mx-auto w-75">
         <p id="subscription-status" class="text-center"></p>
+
         <div class="text-center">
             <button id="subscribe-btn">Subscribe</button>
             <button id="unsubscribe-btn">Unsubscribe</button>
         </div>
+
+        <form action="" class="mx-auto w-75" id="push-form">
+            <div class="my-3">
+                <label for="notification-title" class="d-block">Notification Title</label>
+                <input type="text" class="d-block w-100" id="notification-title" name="title">
+            </div>
+            <div class="my-3">
+                <label for="notification-body" class="d-block">Notification Body</label>
+                <input type="text" class="d-block w-100" id="notification-body" name="data">
+            </div>
+            <button id="send-btn" type="submit">Send</button>
+        </form>
+
     </div>
 
     <script type="module" src="./index.js"></script>
