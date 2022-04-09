@@ -6,13 +6,19 @@ import { SubscriptionManager } from './push.js'
  */
 function setStatus(subscribed) {
     const subscriptionStatus = document.querySelector('#subscription-status')
-    subscriptionStatus.textContent = subscribed
-        ? 'SUBSCRIBED'
-        : 'NOT SUBSCRIBED'
-    subscriptionStatus.classList.add(subscribed ? 'bg-lightgreen' : 'bg-silver')
-    subscriptionStatus.classList.remove(
-        subscribed ? 'bg-silver' : 'bg-lightgreen'
-    )
+    const pushForm = document.querySelector('#push-form')
+
+    if (subscribed) {
+        subscriptionStatus.textContent = 'SUBSCRIBED'
+        subscriptionStatus.classList.add('bg-lightgreen')
+        subscriptionStatus.classList.remove('bg-silver')
+        pushForm.classList.remove('d-none')
+    } else {
+        subscriptionStatus.textContent = 'UNSUBSCRIBED'
+        subscriptionStatus.classList.add('bg-silver')
+        subscriptionStatus.classList.remove('bg-lightgreen')
+        pushForm.classList.add('d-none')
+    }
 
     document.querySelector('#subscribe-btn').disabled = subscribed
     document.querySelector('#unsubscribe-btn').disabled = !subscribed
@@ -29,28 +35,54 @@ export default async function main() {
     await subManager.init()
     setStatus(subManager.subscribed)
 
-    // wait for service worker to be ready
-    // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/ready
-
     document
         .querySelector('#subscription-status-div')
         .classList.remove('d-none')
 
     // add event listener for subscribe btn
-    const subscribeBtn = document.querySelector('#subscribe-btn')
-    subscribeBtn.addEventListener('click', async function (e) {
-        // disable button while processing
-        await subManager.createSubscription()
-        await subManager.subscribe()
-        setStatus(subManager.subscribed)
-    })
+    document
+        .querySelector('#subscribe-btn')
+        .addEventListener('click', async function (e) {
+            // disable button while processing
+            await subManager.createSubscription()
+            await subManager.subscribe()
+            setStatus(subManager.subscribed)
+        })
 
     // add event listener for unsubscribe btn
-    const unsubscribeBtn = document.querySelector('#unsubscribe-btn')
-    unsubscribeBtn.addEventListener('click', async function (e) {
-        // disable button while processing
-        await subManager.unsubscribe()
-        setStatus(subManager.subscribed)
-        subManager.debug()
-    })
+    document
+        .querySelector('#unsubscribe-btn')
+        .addEventListener('click', async function (e) {
+            // disable button while processing
+            await subManager.unsubscribe()
+            setStatus(subManager.subscribed)
+            subManager.debug()
+        })
+
+    // submit form
+    document
+        .querySelector('#send-btn')
+        .addEventListener('click', async function (e) {
+            e.preventDefault()
+            const titleInput = document.querySelector('#notification-title')
+            const bodyInput = document.querySelector('#notification-body')
+
+            try {
+                await fetch('/notify', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title: titleInput.value,
+                        data: bodyInput.value,
+                    }),
+                    headers: {
+                        'content-type': 'application/json',
+                    },
+                })
+                // reset form
+                titleInput.value = ''
+                bodyInput.value = ''
+            } catch (error) {
+                console.log('error submitting form:', error)
+            }
+        })
 }
