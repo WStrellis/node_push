@@ -1,4 +1,4 @@
-FROM node:14-buster AS npm_packages
+FROM node:14-alpine AS npm_packages
 
 WORKDIR /tmp
 
@@ -7,7 +7,7 @@ COPY package-lock.json .
 
 RUN npm i
 
-FROM node:14-buster
+FROM node:14-alpine
 
 WORKDIR /srv/push_app
 
@@ -17,5 +17,4 @@ COPY client client
 COPY index.js .
 COPY src src 
 
-EXPOSE 3000
 CMD ["node","index.js"]

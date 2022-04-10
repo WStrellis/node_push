@@ -40,7 +40,7 @@ app.get('/subscriptions',(req,res) => res.status(200).send({data: [...subscripti
 // serve web page
 app.use(express.static(path.join(__dirname, 'client')))
 
-const port = process.env.SERVER_PORT || 3000
+const port = process.env.HTTP_PORT || 3000
 app.listen(port, () => {
     console.log(`server listening on ${port}`)
 })

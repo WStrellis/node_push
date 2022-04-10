@@ -43,7 +43,12 @@ export default async function main() {
     document
         .querySelector('#subscribe-btn')
         .addEventListener('click', async function (e) {
-            // disable button while processing
+            // TODO: disable button while processing
+
+            const notifyOK = await Notification.requestPermission()
+            console.log("notifyOK",notifyOK)
+            if(notifyOK !== "granted") return
+
             await subManager.createSubscription()
             await subManager.subscribe()
             setStatus(subManager.subscribed)

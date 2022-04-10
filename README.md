@@ -14,7 +14,7 @@ Variables can be written to `<project_root>/.env`
 
 ## Running Docker Image  
 ```
-dk run -p 3000:3000 --name <CONTAINER NAME> -e VAPID_PUBLIC_KEY=<PUBLIC KEY> -e VAPID_PRIVATE_KEY=<PRIVATE KEY> push_app
+dk run -d -p [PORT]:[PORT] [--name CONTAINER NAME] [-e HTTP_PORT=PORT] <-e VAPID_PUBLIC_KEY=PUBLIC KEY> <-e VAPID_PRIVATE_KEY=PRIVATE KEY> push_app
 ```
 
 ### Notes About Push Notifications
