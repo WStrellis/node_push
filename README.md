@@ -7,8 +7,9 @@ Variables can be written to `<project_root>/.env`
 
 | Name  | Required | Description  |
 |:-:|:-:|:-:|
-| VAPID_PRIVATE_KEY  | No  | Private key for push notifications  |
-| VAPID_PUBLIC_KEY  | No  |  Public key for push notifications |
+| VAPID_PRIVATE_KEY  | Yes  | Private key for push notifications  |
+| VAPID_PUBLIC_KEY  | Yes  |  Public key for push notifications |
+| HTTP_PORT  | No  |  Port the application server will listen on. Defaults to `3000` |
 | MAIL_TO  | No  | email address for push notification configuration  |
 
 
